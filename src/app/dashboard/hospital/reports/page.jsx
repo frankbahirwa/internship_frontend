@@ -9,6 +9,9 @@ import { useTranslation } from 'react-i18next';
 
 export default function HospitalReportsPage() {
     const { t } = useTranslation();
+    const { user } = useAuthStore();
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchReports = async () => {
