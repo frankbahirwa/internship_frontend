@@ -5,8 +5,10 @@ import { motion } from 'framer-motion';
 import { Activity, BarChart3, TrendingUp, Users, Heart, Loader2, Clock, CheckCircle, ShieldCheck, Droplets } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminReportsPage() {
+    const { t } = useTranslation();
     const { user } = useAuthStore();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -39,10 +41,10 @@ export default function AdminReportsPage() {
             <div className="flex items-end justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        System <span className="text-ruby">Analytics</span>
+                        {t('dashboard.system')} <span className="text-ruby">{t('dashboard.analytics')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        Comprehensive overview of the blood donation ecosystem.
+                        {t('dashboard.system_analytics_desc')}
                     </p>
                 </div>
             </div>
@@ -51,25 +53,25 @@ export default function AdminReportsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ReportCard
                     icon={Users}
-                    label="Active Users"
+                    label={t('dashboard.active_users')}
                     value={stats?.systemHealth?.activeUsers || 0}
                     color="blue"
                 />
                 <ReportCard
                     icon={ShieldCheck}
-                    label="Verified Hospitals"
+                    label={t('dashboard.verified_hospitals')}
                     value={stats?.systemHealth?.verifiedHospitals || 0}
                     color="emerald"
                 />
                 <ReportCard
                     icon={Droplets}
-                    label="Total Donations"
+                    label={t('dashboard.total_donations')}
                     value={stats?.donationTrends?.successfulDonations || 0}
                     color="ruby"
                 />
                 <ReportCard
                     icon={Activity}
-                    label="Efficiency Score"
+                    label={t('dashboard.efficiency_score')}
                     value={`${stats?.systemHealth?.systemEfficiency || 95}%`}
                     color="amber"
                 />
@@ -82,7 +84,7 @@ export default function AdminReportsPage() {
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-xl font-bold flex items-center gap-2">
                             <TrendingUp className="w-5 h-5 text-blue-500" />
-                            User Growth & Activity
+                            {t('dashboard.user_growth_activity')}
                         </h3>
                     </div>
                     <div className="h-64 flex items-end justify-between gap-2 px-2 border-b border-foreground/5 pb-4">
@@ -101,23 +103,23 @@ export default function AdminReportsPage() {
                 <div className="glass p-8 rounded-3xl border border-white/5 space-y-6">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <Activity className="w-5 h-5 text-ruby" />
-                        System Health
+                        {t('dashboard.system_health')}
                     </h3>
 
-                    <HealthMetric label="API Latency" value="45ms" status="good" />
-                    <HealthMetric label="Database Load" value="12%" status="good" />
-                    <HealthMetric label="Failed Requests" value="0.2%" status="good" />
-                    <HealthMetric label="Storage Usage" value="45%" status="warning" />
+                    <HealthMetric label={t('dashboard.api_latency')} value="45ms" status="good" />
+                    <HealthMetric label={t('dashboard.database_load')} value="12%" status="good" />
+                    <HealthMetric label={t('dashboard.failed_requests')} value="0.2%" status="good" />
+                    <HealthMetric label={t('dashboard.storage_usage')} value="45%" status="warning" />
                 </div>
             </div>
 
             {/* Recent Alerts Table (Placeholder) */}
             <div className="glass rounded-3xl overflow-hidden border border-foreground/5">
                 <div className="p-6 border-b border-white/5">
-                    <h3 className="font-bold text-lg">System Alerts</h3>
+                    <h3 className="font-bold text-lg">{t('dashboard.system_alerts')}</h3>
                 </div>
                 <div className="p-8 text-center text-foreground/40 text-sm">
-                    No critical system alerts in the last 24 hours.
+                    {t('dashboard.no_critical_alerts')}
                 </div>
             </div>
         </div>

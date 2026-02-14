@@ -228,7 +228,7 @@ export default function DashboardLayout({ children }) {
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
+                        transition={{ delay: 0.05 }}
                         className="h-full"
                     >
                         {children}

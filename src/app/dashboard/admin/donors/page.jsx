@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Activity, Phone, Mail, Loader2, MapPin } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminDonorsPage() {
+    const { t } = useTranslation();
     const { user } = useAuthStore();
     const [donors, setDonors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -64,10 +66,10 @@ export default function AdminDonorsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Manage <span className="text-ruby">Donors</span>
+                        {t('dashboard.manage_donors').split(' ')[0]} <span className="text-ruby">{t('dashboard.donors')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        View registered donors and their activity.
+                        {t('dashboard.manage_donors_desc')}
                     </p>
                 </div>
 
@@ -76,7 +78,7 @@ export default function AdminDonorsPage() {
                         <Search className="w-4 h-4 text-foreground/40" />
                         <input
                             type="text"
-                            placeholder="Search donors..."
+                            placeholder={t('dashboard.search_donors')}
                             className="bg-transparent border-none outline-none text-sm w-48"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -91,7 +93,7 @@ export default function AdminDonorsPage() {
                     onClick={() => setFilter('ALL')}
                     className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${filter === 'ALL' ? 'bg-foreground text-obsidian border-foreground' : 'bg-white/5 border-white/10 text-foreground/60 hover:text-foreground'}`}
                 >
-                    View All
+                    {t('dashboard.all')}
                 </button>
                 {['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'].map(type => (
                     <button
@@ -123,19 +125,19 @@ export default function AdminDonorsPage() {
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-lg truncate max-w-[150px]">{donor.user?.username || 'Unknown'}</h3>
-                                                <span className="text-xs text-foreground/40 flex items-center gap-1">
-                                                    <Activity className="w-3 h-3" /> {donor.totalDonations} Donations
+                                                <span className="font-bold text-ruby flex items-center gap-1">
+                                                    <Activity className="w-3 h-3" /> {donor.totalDonations} {t('dashboard.donations_count')}
                                                 </span>
                                             </div>
                                         </div>
                                         <button
                                             onClick={() => toggleStatus(donor)}
                                             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${donor.user?.isActive
-                                                    ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
-                                                    : 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white'
+                                                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
+                                                : 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white'
                                                 }`}
                                         >
-                                            {donor.user?.isActive ? 'Active' : 'Banned'}
+                                            {donor.user?.isActive ? t('dashboard.active') : t('dashboard.banned')}
                                         </button>
                                     </div>
 
@@ -146,17 +148,17 @@ export default function AdminDonorsPage() {
                                         </div>
                                         <div className="flex items-center gap-3 text-xs text-foreground/60">
                                             <Phone className="w-3.5 h-3.5 text-foreground/40" />
-                                            <span className="truncate">{donor.user?.phone || 'No phone'}</span>
+                                            <span className="truncate">{donor.user?.phone || t('dashboard.no_phone')}</span>
                                         </div>
                                         <div className="flex items-center gap-3 text-xs text-foreground/60">
                                             <MapPin className="w-3.5 h-3.5 text-foreground/40" />
-                                            <span className="truncate">{donor.city || 'Location N/A'}</span>
+                                            <span className="truncate">{donor.city || t('dashboard.location_not_set')}</span>
                                         </div>
                                     </div>
 
                                     <div className="mt-4 pt-4 flex items-center justify-between">
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${donor.isMedicallyEligible ? 'bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20' : 'bg-orange-500/10 text-orange-500 ring-1 ring-orange-500/20'}`}>
-                                            {donor.isMedicallyEligible ? 'Eligible' : 'Not Certified'}
+                                            {donor.isMedicallyEligible ? t('dashboard.certified') : t('dashboard.not_certified')}
                                         </span>
                                         <span className="text-[10px] text-foreground/30 font-mono">
                                             ID: {donor.id.slice(0, 6)}...
@@ -167,7 +169,7 @@ export default function AdminDonorsPage() {
                         </div>
                     ) : (
                         <div className="py-20 text-center glass rounded-3xl border-dashed border-2 border-foreground/10">
-                            <p className="text-foreground/40 font-medium">No donors found matching criteria.</p>
+                            <p className="text-foreground/40 font-medium">{t('dashboard.no_donors_found')}</p>
                         </div>
                     )}
                 </AnimatePresence>

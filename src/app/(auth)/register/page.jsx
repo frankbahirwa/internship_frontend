@@ -7,14 +7,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
-
-const steps = [
-    { id: 'role', title: 'Choose Role', icon: ShieldCheck },
-    { id: 'details', title: 'Account Details', icon: Mail },
-    { id: 'profile', title: 'User Profile', icon: User },
-];
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 export default function RegisterPage() {
+    const { t } = useTranslation();
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -29,6 +26,12 @@ export default function RegisterPage() {
         weight: '',
         bloodType: '', // Required for donors
     });
+
+    const steps = [
+        { id: 'role', title: t('auth.choose_role'), icon: ShieldCheck },
+        { id: 'details', title: t('auth.account_details'), icon: Mail },
+        { id: 'profile', title: t('auth.user_profile'), icon: User },
+    ];
 
     const router = useRouter();
     const setAuth = useAuthStore((state) => state.setAuth);
@@ -126,13 +129,12 @@ export default function RegisterPage() {
                         </div>
 
                         <h1 className="text-5xl lg:text-6xl font-black leading-[1.1] tracking-tighter mb-8">
-                            <span className="whitespace-nowrap">Experience <span className="text-ruby">Seamless</span></span> <br />
-                            Life Saving.
+                            <span className="whitespace-nowrap">{t('auth.experience')} <span className="text-ruby">{t('auth.seamless')}</span></span> <br />
+                            {t('auth.life_saving')}
                         </h1>
 
                         <p className="text-lg text-foreground/60 leading-relaxed mb-12 font-medium">
-                            Join thousands of donors and medical facilities working together to ensure
-                            no emergency goes unanswered.
+                            {t('auth.join_network')}
                         </p>
 
                         {/* Progress Stepper (Vertical in Left Side) */}
@@ -156,7 +158,7 @@ export default function RegisterPage() {
                                     </motion.div>
                                     <div className="flex flex-col">
                                         <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${idx <= currentStep ? 'text-ruby' : 'text-foreground/20'}`}>
-                                            Step 0{idx + 1}
+                                            {t('auth.step')} 0{idx + 1}
                                         </span>
                                         <span className={`text-sm font-bold ${idx <= currentStep ? 'text-foreground' : 'text-foreground/40'}`}>
                                             {step.title}
@@ -181,10 +183,13 @@ export default function RegisterPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-[580px] relative z-10"
                 >
+                    <div className="absolute -top-12 right-0 md:-top-16">
+                        <LanguageSelector />
+                    </div>
                     <div className="mb-10 text-center">
-                        <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight uppercase">Registration</h2>
+                        <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight uppercase">{t('auth.registration')}</h2>
                         <p className="text-foreground/40 text-[10px] font-black tracking-[0.3em] uppercase">
-                            {steps[currentStep].title} • {currentStep + 1} of {steps.length}
+                            {steps[currentStep].title} • {currentStep + 1} {t('auth.of')} {steps.length}
                         </p>
                     </div>
 
@@ -203,8 +208,8 @@ export default function RegisterPage() {
                                     <div className="space-y-8 py-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {[
-                                                { id: 'DONOR', icon: User, label: 'Hero Donor', desc: 'Donate blood/platelets' },
-                                                { id: 'HOSPITAL', icon: Hospital, label: 'Medical Facility', desc: 'Request blood units' },
+                                                { id: 'DONOR', icon: User, label: t('auth.hero_donor'), desc: t('auth.donate_desc') },
+                                                { id: 'HOSPITAL', icon: Hospital, label: t('auth.medical_facility'), desc: t('auth.request_desc') },
                                             ].map((roleOption) => (
                                                 <button
                                                     key={roleOption.id}
@@ -232,7 +237,7 @@ export default function RegisterPage() {
                                             ))}
                                         </div>
                                         <p className="text-center text-[10px] uppercase font-black tracking-widest text-foreground/20 px-8 leading-loose mt-8">
-                                            Your role defines how you interact with the platform. Donors save lives, Hospitals request units.
+                                            {t('auth.role_desc')}
                                         </p>
                                     </div>
                                 )}
@@ -241,7 +246,7 @@ export default function RegisterPage() {
                                     <div className="space-y-6 py-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-3">
-                                                <label className="text-sm font-bold text-foreground/60 ml-1">Username</label>
+                                                <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.username')}</label>
                                                 <div className="relative group/field">
                                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                     <input
@@ -253,7 +258,7 @@ export default function RegisterPage() {
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <label className="text-sm font-bold text-foreground/60 ml-1">Email Address</label>
+                                                <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.email')}</label>
                                                 <div className="relative group/field">
                                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                     <input
@@ -266,7 +271,7 @@ export default function RegisterPage() {
                                             </div>
                                         </div>
                                         <div className="space-y-3">
-                                            <label className="text-sm font-bold text-foreground/60 ml-1">Phone Number</label>
+                                            <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.phone')}</label>
                                             <div className="relative group/field">
                                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                 <input
@@ -278,7 +283,7 @@ export default function RegisterPage() {
                                             </div>
                                         </div>
                                         <div className="space-y-3">
-                                            <label className="text-sm font-bold text-foreground/60 ml-1">Strong Password</label>
+                                            <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.strong_password')}</label>
                                             <div className="relative group/field">
                                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                 <input
@@ -295,7 +300,7 @@ export default function RegisterPage() {
                                 {currentStep === 2 && (
                                     <div className="space-y-6 py-4">
                                         <div className="space-y-3">
-                                            <label className="text-sm font-bold text-foreground/60 ml-1">City / Region</label>
+                                            <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.city_region')}</label>
                                             <div className="relative group/field">
                                                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                 <input
@@ -310,7 +315,7 @@ export default function RegisterPage() {
                                         {formData.role === 'DONOR' && (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-3">
-                                                    <label className="text-sm font-bold text-foreground/60 ml-1">Birth Date</label>
+                                                    <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.birth_date')}</label>
                                                     <div className="relative group/field">
                                                         <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                         <input
@@ -322,7 +327,7 @@ export default function RegisterPage() {
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3">
-                                                    <label className="text-sm font-bold text-foreground/60 ml-1">Weight (kg)</label>
+                                                    <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.weight_kg')}</label>
                                                     <div className="relative group/field">
                                                         <Weight className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                                         <input
@@ -338,7 +343,7 @@ export default function RegisterPage() {
 
                                         {formData.role === 'DONOR' && (
                                             <div className="space-y-3">
-                                                <label className="text-sm font-bold text-foreground/60 ml-1">Blood Type *</label>
+                                                <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.blood_type')}</label>
                                                 <div className="grid grid-cols-4 gap-3">
                                                     {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((type) => (
                                                         <button
@@ -364,7 +369,7 @@ export default function RegisterPage() {
                                                         </button>
                                                     ))}
                                                 </div>
-                                                <p className="text-[10px] text-foreground/30 font-medium ml-1">Select your blood type for accurate matching</p>
+                                                <p className="text-[10px] text-foreground/30 font-medium ml-1">{t('auth.blood_type_desc')}</p>
                                             </div>
                                         )}
 
@@ -372,7 +377,7 @@ export default function RegisterPage() {
                                             <motion.div
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
-                                                className="bg-ruby/10 border-l-4 border-ruby p-4 rounded-r-xl flex items-center gap-3\"
+                                                className="bg-ruby/10 border-l-4 border-ruby p-4 rounded-r-xl flex items-center gap-3"
                                             >
                                                 <AlertCircle className="w-5 h-5 text-ruby shrink-0" />
                                                 <span className="text-xs font-bold text-ruby">{error}</span>
@@ -402,7 +407,7 @@ export default function RegisterPage() {
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                 ) : (
                                     <>
-                                        {currentStep === steps.length - 1 ? 'Finish Account' : 'Continue'}
+                                        {currentStep === steps.length - 1 ? t('auth.finish_account') : t('auth.continue')}
                                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -412,14 +417,14 @@ export default function RegisterPage() {
 
                     <div className="mt-12 text-center">
                         <p className="text-foreground/40 text-xs font-bold uppercase tracking-widest">
-                            Already a hero?{' '}
+                            {t('auth.already_hero')}{' '}
                             <Link href="/login" className="text-ruby hover:underline">
-                                Log in here
+                                {t('auth.log_in_here')}
                             </Link>
                         </p>
 
                         <Link href="/" className="inline-flex items-center gap-2 mt-8 text-[10px] text-foreground/20 hover:text-foreground/40 transition-colors uppercase font-black tracking-[0.2em]">
-                            <ArrowLeft className="w-3 h-3" /> Back to home
+                            <ArrowLeft className="w-3 h-3" /> {t('auth.back_to_home')}
                         </Link>
                     </div>
                 </motion.div >

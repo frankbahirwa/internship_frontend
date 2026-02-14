@@ -6,8 +6,10 @@ import { Plus, Search, Filter, Clock, Users, CheckCircle, AlertOctagon, XCircle,
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function HospitalRequestsPage() {
+    const { t } = useTranslation();
     const { user } = useAuthStore();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,13 +33,13 @@ export default function HospitalRequestsPage() {
     }, [user]);
 
     const handleCancel = async (requestId) => {
-        if (!confirm('Are you sure you want to cancel this request? This action cannot be undone.')) return;
+        if (!confirm(t('dashboard.confirm_cancel_request'))) return;
         try {
             await api.patch(`/requests/${requestId}/cancel`);
             setRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'CANCELLED' } : r));
         } catch (err) {
             console.error('Error cancelling request:', err);
-            alert('Failed to cancel request');
+            alert(t('dashboard.failed_cancel_request'));
         }
     };
 
@@ -68,10 +70,10 @@ export default function HospitalRequestsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Manage <span className="text-ruby">Requests</span>
+                        {t('dashboard.manage_requests').split(' ')[0]} <span className="text-ruby">{t('dashboard.requests')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        Track status and manage donor responses.
+                        {t('dashboard.manage_requests_desc')}
                     </p>
                 </div>
             </div>
@@ -80,31 +82,31 @@ export default function HospitalRequestsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MiniStatCard
                     icon={Clock}
-                    label="Active"
+                    label={t('dashboard.active')}
                     value={stats.open}
                     cardColor="ruby"
-                    description="Open for donation"
+                    description={t('dashboard.active_requests_desc')}
                 />
                 <MiniStatCard
                     icon={CheckCircle}
-                    label="Fulfilled"
+                    label={t('dashboard.fulfilled')}
                     value={stats.fulfilled}
                     cardColor="emerald"
-                    description="Successfully completed"
+                    description={t('dashboard.fulfilled_requests_desc')}
                 />
                 <MiniStatCard
                     icon={Ban}
-                    label="Cancelled"
+                    label={t('dashboard.cancelled')}
                     value={stats.cancelled}
                     cardColor="amber"
-                    description="Withdrawn requests"
+                    description={t('dashboard.cancelled_requests_desc')}
                 />
                 <MiniStatCard
                     icon={Users}
-                    label="Total"
+                    label={t('dashboard.total')}
                     value={stats.total}
                     cardColor="blue"
-                    description="All time requests"
+                    description={t('dashboard.total_requests_desc')}
                 />
             </div>
 
@@ -113,7 +115,7 @@ export default function HospitalRequestsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20" />
                     <input
                         type="text"
-                        placeholder="Search by ID or details..."
+                        placeholder={t('dashboard.search_by_id_desc')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-ruby/50 transition-colors"
@@ -126,7 +128,7 @@ export default function HospitalRequestsPage() {
                             onClick={() => setFilter(status)}
                             className={`px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest uppercase transition-all whitespace-nowrap ${filter === status ? 'bg-white text-obsidian shadow-lg' : 'text-foreground/40 hover:text-foreground hover:bg-white/5'}`}
                         >
-                            {status}
+                            {t(`dashboard.${status.toLowerCase()}`)}
                         </button>
                     ))}
                 </div>
@@ -138,13 +140,13 @@ export default function HospitalRequestsPage() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white/2 border-b border-white/5">
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Reference ID</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Type</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Units</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Urgency</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Status</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 text-right">Date</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 text-center">Actions</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{t('dashboard.reference_id')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{t('dashboard.type')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{t('dashboard.units')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{t('dashboard.urgency')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{t('dashboard.status')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 text-right">{t('dashboard.date')}</th>
+                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 text-center">{t('dashboard.actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -169,17 +171,17 @@ export default function HospitalRequestsPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 text-sm font-bold">{req.unitsNeeded} Units</td>
+                                            <td className="px-6 py-5 text-sm font-bold">{req.unitsNeeded} {t('dashboard.units')}</td>
                                             <td className="px-6 py-5">
                                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${req.urgencyLevel === 'CRITICAL' ? 'bg-ruby/5 text-ruby border-ruby/20' :
                                                     req.urgencyLevel === 'URGENT' ? 'bg-amber-500/5 text-amber-500 border-amber-500/20' :
                                                         'bg-blue-500/5 text-blue-400 border-blue-500/20'
                                                     }`}>
-                                                    {req.urgencyLevel}
+                                                    {t(`dashboard.${req.urgencyLevel.toLowerCase()}`)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-5">
-                                                <StatusBadge status={req.status} />
+                                                <StatusBadge status={req.status} t={t} />
                                             </td>
                                             <td className="px-6 py-5 text-right font-mono text-xs text-foreground/40">
                                                 {new Date(req.createdAt).toLocaleDateString()}
@@ -188,7 +190,7 @@ export default function HospitalRequestsPage() {
                                                 <div className="flex items-center justify-center gap-2">
                                                     <Link href={`/dashboard/hospital/requests/${req.id}`}>
                                                         <button className="flex items-center gap-1.5 px-4 py-1.5 bg-white text-obsidian text-[10px] font-black uppercase tracking-tight rounded-lg hover:bg-ruby hover:text-white transition-all transform active:scale-95">
-                                                            Manage
+                                                            {t('dashboard.manage')}
                                                             <ChevronRight className="w-3.5 h-3.5" />
                                                         </button>
                                                     </Link>
@@ -207,7 +209,7 @@ export default function HospitalRequestsPage() {
                                 ) : (
                                     <tr>
                                         <td colSpan="7" className="py-20 text-center">
-                                            <p className="text-foreground/40 font-medium tracking-wide">No requests found matching your filters.</p>
+                                            <p className="text-foreground/40 font-medium tracking-wide">{t('dashboard.no_requests_matching')}</p>
                                         </td>
                                     </tr>
                                 )}
@@ -220,7 +222,7 @@ export default function HospitalRequestsPage() {
     );
 }
 
-function StatusBadge({ status }) {
+function StatusBadge({ status, t }) {
     const styles = {
         OPEN: 'bg-ruby/10 text-ruby border-ruby/20',
         MATCHED: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
@@ -229,7 +231,7 @@ function StatusBadge({ status }) {
     };
     return (
         <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-tight border ${styles[status]}`}>
-            {status}
+            {t(`dashboard.${status.toLowerCase()}`)}
         </span>
     );
 }

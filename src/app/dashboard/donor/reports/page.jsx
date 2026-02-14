@@ -5,11 +5,14 @@ import { motion } from 'framer-motion';
 import { Activity, BarChart3, TrendingUp, Users, Heart, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function DonorReportsPage() {
     const { user } = useAuthStore();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -39,14 +42,14 @@ export default function DonorReportsPage() {
             <div className="flex items-end justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Impact <span className="text-ruby">Reports</span>
+                        {t('dashboard.impact_reports').split(' ')[0]} <span className="text-ruby">{t('dashboard.reports')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        See how your donations are changing lives.
+                        {t('dashboard.impact_reports_desc')}
                     </p>
                 </div>
                 <div className="text-right hidden md:block">
-                    <p className="text-xs font-bold text-foreground/30 uppercase tracking-widest">Total Donations</p>
+                    <p className="text-xs font-bold text-foreground/30 uppercase tracking-widest">{t('dashboard.total_donations')}</p>
                     <p className="text-4xl font-black text-ruby">{stats?.donorProfile?.totalDonations || 0}</p>
                 </div>
             </div>
@@ -55,27 +58,27 @@ export default function DonorReportsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ReportCard
                     icon={Heart}
-                    label="Lives Saved"
+                    label={t('dashboard.lives_saved')}
                     value={stats?.impact?.livesSaved || (stats?.donorProfile?.totalDonations * 3) || 0}
                     color="ruby"
                 />
                 <ReportCard
                     icon={Users}
-                    label="Community Reach"
+                    label={t('dashboard.community_reach')}
                     value={stats?.impact?.communityReach || (stats?.donorProfile?.totalDonations * 5) || 0}
                     color="blue"
                 />
                 <ReportCard
                     icon={Activity}
-                    label="Health Check"
-                    value="Excellent"
+                    label={t('dashboard.health_check')}
+                    value={t('dashboard.excellent')}
                     color="emerald"
                     isText
                 />
                 <ReportCard
                     icon={TrendingUp}
-                    label="Next Milestone"
-                    value="Bronze"
+                    label={t('dashboard.next_milestone')}
+                    value={t('dashboard.bronze')}
                     color="orange"
                     isText
                 />
@@ -86,11 +89,11 @@ export default function DonorReportsPage() {
                 <div className="flex items-center justify-between mb-8">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-foreground/50" />
-                        Donation History
+                        {t('dashboard.donation_history')}
                     </h3>
                     <select className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-sm outline-none focus:border-ruby/50 transition-colors">
-                        <option>Last 12 Months</option>
-                        <option>All Time</option>
+                        <option>{t('dashboard.last_12_months')}</option>
+                        <option>{t('dashboard.all_time')}</option>
                     </select>
                 </div>
 
@@ -101,14 +104,15 @@ export default function DonorReportsPage() {
                             <div className="absolute bottom-0 inset-x-0 h-1 bg-ruby/30 group-hover:bg-ruby transition-colors" />
                             {/* Tooltip */}
                             <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-obsidian text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10">
-                                {height} Units
+                                {height} {t('dashboard.units')}
                             </div>
                         </div>
                     ))}
                 </div>
                 <div className="flex justify-between mt-4 text-xs text-foreground/30 font-bold uppercase tracking-widest px-2">
-                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-                    <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+                        <span key={m}>{t(`common.months.${m.toLowerCase()}`, m)}</span>
+                    ))}
                 </div>
             </div>
         </div>
@@ -116,6 +120,7 @@ export default function DonorReportsPage() {
 }
 
 function ReportCard({ icon: Icon, label, value, color, isText }) {
+
     const colorMap = {
         ruby: 'text-ruby bg-ruby/10 border-ruby/20',
         blue: 'text-blue-500 bg-blue-500/10 border-blue-500/20',

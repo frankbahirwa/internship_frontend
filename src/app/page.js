@@ -21,33 +21,31 @@ import {
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "@/components/common/LanguageSelector";
 
 // Dynamic import for Map to prevent SSR issues
 const Map = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-obsidian-light animate-pulse flex items-center justify-center">
-      <div className="flex flex-col items-center gap-2">
-        <div className="w-12 h-12 rounded-full border-2 border-ruby/30 border-t-ruby animate-spin" />
-        <span className="text-[10px] font-bold text-ruby uppercase tracking-widest">Initialising Grid</span>
+  loading: () => {
+    const { t } = useTranslation();
+    return (
+      <div className="w-full h-full bg-obsidian-light animate-pulse flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-full border-2 border-ruby/30 border-t-ruby animate-spin" />
+          <span className="text-[10px] font-bold text-ruby uppercase tracking-widest">{t('landing.initializing')}</span>
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 });
 
 export default function Home() {
+  const { t, i18n } = useTranslation();
   const [donors, setDonors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [langOpen, setLangOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState({ code: 'EN', name: 'English' });
 
-  const languages = [
-    { code: 'RW', name: 'Kinyarwanda' },
-    { code: 'EN', name: 'English' },
-    { code: 'SW', name: 'Kiswahili' },
-    { code: 'FR', name: 'French' }
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +59,7 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching map data:", error);
       } finally {
-        setTimeout(() => setLoading(false), 800); // Slight delay for smooth transition
+        setTimeout(() => setLoading(false), 100); // Reduced for snappier feel
       }
     };
     fetchData();
@@ -75,7 +73,7 @@ export default function Home() {
             key="loader"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="fixed inset-0 z-[2000] bg-obsidian flex flex-col items-center justify-center"
           >
             <div className="relative">
@@ -91,7 +89,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-6 text-[10px] font-black text-white uppercase tracking-[0.4em]"
             >
-              LifeLine Match Protocol
+              {t('landing.protocol')}
             </motion.span>
           </motion.div>
         ) : (
@@ -99,7 +97,7 @@ export default function Home() {
             key="dashboard"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="mx-auto space-y-3"
           >
 
@@ -128,55 +126,13 @@ export default function Home() {
                   <Search className="w-4 h-4 text-foreground/20 group-focus-within/search:text-ruby transition-colors" />
                   <input
                     type="text"
-                    placeholder="Search Active Lifeline Resources..."
+                    placeholder={t('common.search')}
                     className="bg-transparent border-none outline-none text-xs font-semibold w-full placeholder:text-foreground/20 text-white"
                   />
                 </div>
 
                 {/* Language Picker */}
-                <div className="relative">
-                  <motion.button
-                    onClick={() => setLangOpen(!langOpen)}
-                    whileHover={{ backgroundColor: 'rgba(230, 57, 70, 0.1)' }}
-                    className="flex items-center gap-2 bg-white/5 border border-ruby/30 px-4 py-2.5 rounded-2xl transition-all group/lang h-[42px]"
-                  >
-                    <Globe className="w-4 h-4 text-ruby group-hover/lang:rotate-12 transition-transform" />
-                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">{selectedLang.code}</span>
-                    <ChevronDown className={`w-3 h-3 text-white/40 transition-transform duration-300 ${langOpen ? 'rotate-180' : ''}`} />
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {langOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-48 bg-black rounded-2xl border border-ruby/20 shadow-2xl z-[2000] overflow-hidden p-1"
-                      >
-                        {languages.map((lang) => (
-                          <motion.button
-                            key={lang.code}
-                            onClick={() => {
-                              setSelectedLang(lang);
-                              setLangOpen(false);
-                            }}
-                            whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', x: 4 }}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left ${selectedLang.code === lang.code ? 'bg-ruby/10 border-l-2 border-ruby' : ''
-                              }`}
-                          >
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${selectedLang.code === lang.code ? 'text-ruby' : 'text-white/60'
-                              }`}>
-                              {lang.name}
-                            </span>
-                            {selectedLang.code === lang.code && (
-                              <div className="w-1.5 h-1.5 rounded-full bg-ruby animate-pulse" />
-                            )}
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <LanguageSelector />
 
                 <Link href="/register">
                   <motion.button
@@ -184,7 +140,7 @@ export default function Home() {
                     whileTap={{ scale: 0.98 }}
                     className="bg-ruby text-white text-[10px] font-black px-8 py-2.5 rounded-xl uppercase tracking-[0.2em] transition-all shadow-lg shadow-ruby/20 flex items-center gap-2 group shrink-0"
                   >
-                    Register
+                    {t('common.register')}
                     <Zap className="w-3 h-3 group-hover:fill-white transition-all text-white/50" />
                   </motion.button>
                 </Link>
@@ -207,8 +163,8 @@ export default function Home() {
                 {/* Floating Map Stats Overlay */}
                 <div className="absolute top-4 left-4 z-1000 flex gap-2">
                   {[
-                    { label: 'Donors', value: donors.length, color: 'bg-foreground' },
-                    { label: 'Hospitals', value: hospitals.length, color: 'bg-ruby' }
+                    { label: t('landing.donors'), value: donors.length, color: 'bg-foreground' },
+                    { label: t('landing.hospitals'), value: hospitals.length, color: 'bg-ruby' }
                   ].map((stat, i) => (
                     <motion.div
                       initial={{ x: -20, opacity: 0 }}
@@ -227,7 +183,7 @@ export default function Home() {
                 </div>
 
                 <div className="absolute bottom-4 right-4 z-1000 glass px-4 py-2 rounded-xl border-white/5 opacity-0 group-hover/map:opacity-100 transition-opacity">
-                  <span className="text-[9px] font-bold text-white uppercase tracking-widest">Live Coordination Layer</span>
+                  <span className="text-[9px] font-bold text-white uppercase tracking-widest">{t('landing.live_coordination')}</span>
                 </div>
               </motion.div>
 
@@ -235,7 +191,6 @@ export default function Home() {
               <motion.div
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                classes="lg:col-span-3 space-y-3 h-[calc(100vh-100px)] flex flex-col"
                 className="lg:col-span-3 space-y-3 h-[calc(100vh-100px)] flex flex-col"
               >
 
@@ -253,12 +208,12 @@ export default function Home() {
                       <div className="w-8 h-8 rounded-full bg-ruby/10 flex items-center justify-center border border-ruby/20">
                         <ShieldCheck className="w-4 h-4 text-ruby" />
                       </div>
-                      <span className="text-[10px] font-black text-ruby/80 uppercase tracking-[0.3em]">Verified Access</span>
+                      <span className="text-[10px] font-black text-ruby/80 uppercase tracking-[0.3em]">{t('landing.verified_access')}</span>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-black text-white leading-tight mb-2">Elite Matching <br />Network</h2>
+                      <h2 className="text-2xl font-black text-white leading-tight mb-2">{t('landing.hero_title')}</h2>
                       <p className="text-xs text-foreground/40 font-medium leading-relaxed">
-                        Encrypted protocol for immediate life-saving coordination.
+                        {t('landing.hero_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -270,7 +225,7 @@ export default function Home() {
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-white/[0.03] text-white border border-white/10 px-6 py-4 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3 group/btn shadow-lg"
                       >
-                        Access Portal
+                        {t('common.access_portal')}
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform text-ruby" />
                       </motion.button>
                     </Link>
@@ -281,7 +236,7 @@ export default function Home() {
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-black/40 text-white border border-ruby/30 px-6 py-4 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all shadow-xl hover:shadow-ruby/10 active:shadow-inner"
                       >
-                        Register Institution
+                        {t('common.register_institution')}
                       </motion.button>
                     </Link>
                   </div>
@@ -298,9 +253,9 @@ export default function Home() {
                     <div className="space-y-1">
                       <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
                         <TrendingUp className="w-3.5 h-3.5 text-ruby" />
-                        Live Impact
+                        {t('landing.live_impact')}
                       </h3>
-                      <p className="text-[10px] text-foreground/30 font-bold uppercase">Real-time Metrics</p>
+                      <p className="text-[10px] text-foreground/30 font-bold uppercase">{t('landing.realtime_metrics')}</p>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center">
                       <Activity className="w-4 h-4 text-ruby animate-pulse" />

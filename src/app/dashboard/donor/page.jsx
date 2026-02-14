@@ -6,8 +6,10 @@ import { Heart, Activity, Calendar, Award, Droplets, MapPin, CheckCircle2, Alert
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function DonorDashboard() {
+    const { t } = useTranslation();
     const { user } = useAuthStore();
     const [donorProfile, setDonorProfile] = useState(null);
     const [stats, setStats] = useState(null);
@@ -59,16 +61,16 @@ export default function DonorDashboard() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Hello, <span className="text-ruby">{user?.username}</span>
+                        {t('dashboard.hello')} <span className="text-ruby">{user?.username}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        Here's your impact overview for today.
+                        {t('dashboard.impact_overview')}
                     </p>
                 </div>
                 <Link href="/dashboard/donor/requests">
                     <button className="flex items-center gap-2 px-6 py-3 bg-foreground text-obsidian font-bold rounded-xl hover:bg-foreground/90 transition-all shadow-lg shadow-white/5">
                         <Heart className="w-4 h-4 fill-ruby text-ruby" />
-                        Donate Now
+                        {t('dashboard.donate_now')}
                     </button>
                 </Link>
             </div>
@@ -77,27 +79,27 @@ export default function DonorDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
                     icon={Droplets}
-                    label="Total Impact"
+                    label={t('dashboard.total_impact')}
                     value={donorProfile?.totalDonations || 0}
-                    unit="Donations"
-                    subText={stats?.impact || 'Start your journey'}
+                    unit={t('dashboard.donations')}
+                    subText={stats?.impact || t('dashboard.start_journey')}
                     color="ruby"
                 />
                 <StatCard
                     icon={Activity}
-                    label="Eligibility"
-                    value={donorProfile?.isMedicallyEligible ? "Eligible" : "Pending"}
+                    label={t('dashboard.eligibility')}
+                    value={donorProfile?.isMedicallyEligible ? t('dashboard.eligible') : t('dashboard.pending')}
                     unit=""
-                    subText={donorProfile?.isMedicallyEligible ? "Certified & Ready" : "Action Required"}
+                    subText={donorProfile?.isMedicallyEligible ? t('dashboard.certified_ready') : t('dashboard.action_required')}
                     color={donorProfile?.isMedicallyEligible ? "emerald" : "orange"}
                     status={donorProfile?.isMedicallyEligible ? "online" : "offline"}
                 />
                 <StatCard
                     icon={Calendar}
-                    label="Last Donation"
-                    value={donorProfile?.lastDonationDate ? new Date(donorProfile.lastDonationDate).toLocaleDateString() : 'None'}
+                    label={t('dashboard.last_donation')}
+                    value={donorProfile?.lastDonationDate ? new Date(donorProfile.lastDonationDate).toLocaleDateString() : t('dashboard.none')}
                     unit=""
-                    subText={donorProfile?.lastDonationDate ? "90 days cooldown active" : "Ready for first donation"}
+                    subText={donorProfile?.lastDonationDate ? t('dashboard.cooldown_active') : t('dashboard.ready_first_donation')}
                     color="blue"
                 />
             </div>
@@ -108,10 +110,10 @@ export default function DonorDashboard() {
                     <div className="flex items-center justify-between pb-2 border-b border-foreground/5">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <Heart className="w-5 h-5 text-ruby fill-ruby" />
-                            Urgent Matches
+                            {t('dashboard.urgent_matches')}
                         </h2>
                         <Link href="/dashboard/donor/requests" className="text-xs font-bold text-ruby hover:text-ruby-light flex items-center gap-1 transition-colors">
-                            View All <ArrowRight className="w-3 h-3" />
+                            {t('dashboard.view_all')} <ArrowRight className="w-3 h-3" />
                         </Link>
                     </div>
 
@@ -125,7 +127,7 @@ export default function DonorDashboard() {
                                 <div className="w-16 h-16 bg-foreground/5 rounded-full flex items-center justify-center text-foreground/20">
                                     <Activity className="w-8 h-8" />
                                 </div>
-                                <p className="text-foreground/40 font-medium">No urgent requests at the moment.</p>
+                                <p className="text-foreground/40 font-medium">{t('dashboard.no_urgent_requests')}</p>
                             </div>
                         )}
                     </div>
@@ -134,24 +136,24 @@ export default function DonorDashboard() {
                 {/* Side Panel: Tips & Health */}
                 <div className="space-y-8">
                     <div className="pb-2 border-b border-foreground/5">
-                        <h2 className="text-xl font-bold">Preparation</h2>
+                        <h2 className="text-xl font-bold">{t('dashboard.preparation')}</h2>
                     </div>
 
                     <div className="space-y-4">
                         <TipCard
                             icon={Droplets}
-                            title="Hydrate well"
-                            text="Drink 500ml of water 30 mins before donation."
+                            title={t('dashboard.hydrate_well')}
+                            text={t('dashboard.hydrate_text')}
                         />
                         <TipCard
                             icon={CheckCircle2}
-                            title="Iron-rich Diet"
-                            text="Eat spinach or lean meat the day before."
+                            title={t('dashboard.iron_rich')}
+                            text={t('dashboard.iron_text')}
                         />
                         <TipCard
                             icon={AlertCircle}
-                            title="Rest Up"
-                            text="Avoid intense exercise for 24 hours after."
+                            title={t('dashboard.rest_up')}
+                            text={t('dashboard.rest_text')}
                         />
                     </div>
 
@@ -160,16 +162,16 @@ export default function DonorDashboard() {
                         <div className="glass rounded-2xl p-6 border-ruby/20 bg-ruby/5">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 className="font-bold">Eligibility Check</h3>
-                                    <p className="text-xs text-foreground/60 mt-1">Required to donate</p>
+                                    <h3 className="font-bold">{t('dashboard.eligibility_check')}</h3>
+                                    <p className="text-xs text-foreground/60 mt-1">{t('dashboard.required_to_donate')}</p>
                                 </div>
                                 <div className="px-2 py-1 rounded bg-ruby/10 text-ruby text-[10px] font-bold uppercase">
-                                    Action Needed
+                                    {t('dashboard.action_needed')}
                                 </div>
                             </div>
                             <Link href="/dashboard/donor/profile">
                                 <button className="w-full py-3 bg-ruby text-white text-xs font-bold rounded-xl hover:bg-ruby-dark transition-colors shadow-lg shadow-ruby/20">
-                                    Complete Certification
+                                    {t('dashboard.complete_certification')}
                                 </button>
                             </Link>
                         </div>
@@ -214,6 +216,7 @@ function StatCard({ icon: Icon, label, value, unit, subText, color, status }) {
 }
 
 function MatchCard({ match, index, currentUserBloodType }) {
+    const { t } = useTranslation();
     const urgencyColors = {
         CRITICAL: 'text-ruby border-ruby/30 bg-ruby/5',
         URGENT: 'text-orange-500 border-orange-500/30 bg-orange-500/5',
@@ -252,7 +255,7 @@ function MatchCard({ match, index, currentUserBloodType }) {
                             </span>
                             <span className="flex items-center gap-1">
                                 <Activity className="w-3 h-3" />
-                                {match.unitsNeeded} Units Required
+                                {match.unitsNeeded} {t('dashboard.units_required')}
                             </span>
                         </div>
                     </div>
@@ -261,7 +264,7 @@ function MatchCard({ match, index, currentUserBloodType }) {
                 <div className="flex items-center gap-3">
                     <Link href="/dashboard/donor/requests" className="w-full md:w-auto">
                         <button className="w-full md:w-auto px-6 py-2.5 bg-ruby text-white text-sm font-bold rounded-xl hover:bg-ruby-dark transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-ruby/20">
-                            View Details
+                            {t('dashboard.view_details')}
                         </button>
                     </Link>
                 </div>

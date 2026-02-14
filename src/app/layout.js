@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { NotificationProvider } from "@/components/providers/NotificationProvider";
+import { I18nProvider } from "@/components/providers/I18nProvider";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -16,14 +17,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html>
       <body className={`${poppins.variable} antialiased selection:bg-ruby selection:text-white font-poppins`}>
-        <NotificationProvider>
-          <Navbar />
-          <main className="min-h-screen relative overflow-hidden">
-            {children}
-          </main>
-        </NotificationProvider>
+        <I18nProvider>
+          <NotificationProvider>
+            <Navbar />
+            <main className="min-h-screen relative overflow-hidden">
+              {children}
+            </main>
+          </NotificationProvider>
+        </I18nProvider>
       </body>
     </html>
   );

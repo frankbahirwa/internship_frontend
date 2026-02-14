@@ -6,8 +6,10 @@ import { Search, Filter, MapPin, Activity, Clock, Droplets, CheckCircle2, AlertC
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 export default function DonorRequestsPage() {
+    const { t } = useTranslation();
     const { user } = useAuthStore();
     const router = useRouter();
     const [requests, setRequests] = useState([]);
@@ -37,7 +39,7 @@ export default function DonorRequestsPage() {
 
     const handleAccept = async (requestId) => {
         if (!donorProfile?.isMedicallyEligible) {
-            alert("You must certify your medical eligibility first!");
+            alert(t('dashboard.action_required') + ": " + t('dashboard.required_to_donate'));
             router.push('/dashboard/donor/profile');
             return;
         }
@@ -48,7 +50,7 @@ export default function DonorRequestsPage() {
             // Remove from list or show success
             setRequests(prev => prev.filter(r => r.id !== requestId));
             // Show toast/success message (can be added later)
-            alert("Request accepted successfully! Thank you for being a hero.");
+            alert(t('dashboard.accepted'));
             router.push('/dashboard/donor/responses');
         } catch (err) {
             console.error('Error accepting request:', err);
@@ -80,10 +82,10 @@ export default function DonorRequestsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Blood <span className="text-ruby">Requests</span>
+                        Blood <span className="text-ruby">{t('dashboard.urgent_matches')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        Respond to urgent calls and save lives today.
+                        {t('dashboard.emergency_desc')}
                     </p>
                 </div>
 
@@ -92,13 +94,13 @@ export default function DonorRequestsPage() {
                         onClick={() => setFilter('ALL')}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${filter === 'ALL' ? 'bg-foreground text-obsidian shadow-lg' : 'text-foreground/60 hover:text-foreground'}`}
                     >
-                        All Requests
+                        {t('dashboard.blood_type_all')}
                     </button>
                     <button
                         onClick={() => setFilter('MATCHING')}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${filter === 'MATCHING' ? 'bg-ruby text-white shadow-lg shadow-ruby/20' : 'text-foreground/60 hover:text-ruby'}`}
                     >
-                        Matching Me
+                        {t('dashboard.matching_donor')}
                     </button>
                 </div>
             </div>
@@ -122,10 +124,7 @@ export default function DonorRequestsPage() {
                             <div className="w-20 h-20 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-6 text-foreground/20">
                                 <Activity className="w-10 h-10" />
                             </div>
-                            <h3 className="text-xl font-bold text-foreground/40">No requests found</h3>
-                            <p className="text-foreground/30 mt-2 max-w-md mx-auto">
-                                There are currently no blood requests matching your criteria. Check back later!
-                            </p>
+                            <h3 className="text-xl font-bold text-foreground/40">{t('dashboard.no_requests_found')}</h3>
                         </div>
                     )}
                 </AnimatePresence>
@@ -135,6 +134,7 @@ export default function DonorRequestsPage() {
 }
 
 function RequestCard({ request, index, onAccept, isAccepting, isMatch }) {
+    const { t } = useTranslation();
     const urgencyColors = {
         CRITICAL: 'text-ruby border-ruby/30 bg-ruby/5 ring-ruby/10',
         URGENT: 'text-orange-500 border-orange-500/30 bg-orange-500/5 ring-orange-500/10',
@@ -165,7 +165,7 @@ function RequestCard({ request, index, onAccept, isAccepting, isMatch }) {
                                 <h3 className="font-bold text-lg">{request.hospital?.username || 'Hospital'}</h3>
                                 {isMatch && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                        MATCH
+                                        {t('dashboard.eligible')}
                                     </span>
                                 )}
                             </div>
@@ -173,16 +173,6 @@ function RequestCard({ request, index, onAccept, isAccepting, isMatch }) {
                                 {request.urgencyLevel}
                             </span>
                         </div>
-                    </div>
-                    {/* Expiry / Time */}
-                    <div className="text-right">
-                        <div className="flex items-center justify-end gap-1.5 text-xs font-bold text-foreground/40 mb-1">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>Expires in</span>
-                        </div>
-                        <span className="text-sm font-mono text-foreground/70">
-                            {new Date(request.expiresAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
                     </div>
                 </div>
 
@@ -193,7 +183,7 @@ function RequestCard({ request, index, onAccept, isAccepting, isMatch }) {
                     </div>
                     <div className="flex items-center gap-3 text-sm text-foreground/60 p-3 rounded-xl bg-white/5 border border-white/5">
                         <Droplets className="w-4 h-4 text-blue-400" />
-                        <span>{request.unitsNeeded} Units Required</span>
+                        <span>{request.unitsNeeded} {t('dashboard.units')}</span>
                     </div>
                 </div>
 
@@ -206,17 +196,17 @@ function RequestCard({ request, index, onAccept, isAccepting, isMatch }) {
                         {isAccepting ? (
                             <>
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                Processing...
+                                {t('dashboard.accepting')}
                             </>
                         ) : (
                             <>
-                                Accept Request
+                                {t('dashboard.accept_request')}
                                 <CheckCircle2 className="w-4 h-4" />
                             </>
                         )}
                     </button>
                     <button className="px-4 py-3 rounded-xl border border-foreground/10 hover:bg-foreground/5 transition-colors text-foreground/40 hover:text-foreground">
-                        Details
+                        {t('dashboard.view_details')}
                     </button>
                 </div>
             </div>

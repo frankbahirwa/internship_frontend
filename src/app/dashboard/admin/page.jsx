@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Users, Droplets, Activity, Check, X, Search, Loader2, Award, Clock } from 'lucide-react';
 import api from '@/lib/api';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminDashboard() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({ totalDonors: 0, totalHospitals: 0, totalRequests: 0, activeUsers: 0 });
     const [pendingHospitals, setPendingHospitals] = useState([]);
@@ -36,7 +38,7 @@ export default function AdminDashboard() {
             // Update stats
             if (status === 'VERIFIED') setStats(s => ({ ...s, totalHospitals: s.totalHospitals + 1 }));
         } catch (err) {
-            alert('Verification action failed');
+            alert(t('dashboard.verification_action_failed'));
         }
     };
 
@@ -45,10 +47,10 @@ export default function AdminDashboard() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <AdminStat icon={Users} label="Total Donors" value={stats.totalDonors} trend="+12% this month" />
-                <AdminStat icon={ShieldCheck} label="Verified Hospitals" value={stats.totalHospitals} trend="+3 new" />
-                <AdminStat icon={Droplets} label="Blood Requests" value={stats.totalRequests} trend="98% Match Rate" />
-                <AdminStat icon={Activity} label="Active Sessions" value={stats.activeUsers} trend="Live" />
+                <AdminStat icon={Users} label={t('dashboard.total_donors')} value={stats.totalDonors} trend="+12% this month" />
+                <AdminStat icon={ShieldCheck} label={t('dashboard.verified_hospitals')} value={stats.totalHospitals} trend="+3 new" />
+                <AdminStat icon={Droplets} label={t('dashboard.blood_requests_stats')} value={stats.totalRequests} trend="98% Match Rate" />
+                <AdminStat icon={Activity} label={t('dashboard.active_sessions')} value={stats.activeUsers} trend="Live" />
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-white">
@@ -57,11 +59,11 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <Award className="w-5 h-5 text-ruby" />
-                            Verification Queue
+                            {t('dashboard.verification_queue')}
                         </h2>
                         <div className="flex items-center gap-2 bg-obsidian-light rounded-xl px-4 py-2 border border-foreground/5">
                             <Search className="w-4 h-4 text-foreground/40" />
-                            <input type="text" placeholder="Search facilities..." className="bg-transparent border-none outline-none text-xs w-48" />
+                            <input type="text" placeholder={t('dashboard.search_facilities')} className="bg-transparent border-none outline-none text-xs w-48" />
                         </div>
                     </div>
 
@@ -80,8 +82,8 @@ export default function AdminDashboard() {
                         ) : (
                             <div className="glass rounded-3xl p-16 text-center border-dashed border-2 border-foreground/5 bg-emerald-500/5">
                                 <Check className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
-                                <h3 className="text-lg font-bold mb-1">Queue Empty</h3>
-                                <p className="text-sm text-foreground/40">All medical facilities are currently verified. No pending actions.</p>
+                                <h3 className="text-lg font-bold mb-1">{t('dashboard.queue_empty')}</h3>
+                                <p className="text-sm text-foreground/40">{t('dashboard.queue_empty_desc')}</p>
                             </div>
                         )}
                     </div>
@@ -89,17 +91,17 @@ export default function AdminDashboard() {
 
                 {/* Global Trends */}
                 <div className="space-y-6">
-                    <h2 className="text-xl font-bold">System Health</h2>
+                    <h2 className="text-xl font-bold">{t('dashboard.system_health')}</h2>
                     <div className="glass rounded-3xl p-6 border-foreground/5 space-y-6">
-                        <TrendItem label="Matching Efficiency" value="94%" color="ruby" />
-                        <TrendItem label="Fulfillment Velocity" value="2.4 Hrs" color="blue" />
-                        <TrendItem label="Network Expansion" value="Good" color="emerald" />
+                        <TrendItem label={t('dashboard.matching_efficiency')} value="94%" color="ruby" />
+                        <TrendItem label={t('dashboard.fulfillment_velocity')} value="2.4 Hrs" color="blue" />
+                        <TrendItem label={t('dashboard.network_expansion')} value={t('dashboard.good')} color="emerald" />
                         <div className="pt-6 border-t border-foreground/5">
                             <div className="flex items-center gap-2 text-foreground/40 text-xs mb-4">
-                                <Clock className="w-4 h-4" /> Last system audit: 15 mins ago
+                                <Clock className="w-4 h-4" /> {t('dashboard.last_audit')}: 15 {t('dashboard.mins_ago')}
                             </div>
                             <button className="w-full py-3 bg-obsidian-light border border-foreground/10 rounded-2xl text-xs font-bold hover:bg-ruby hover:border-ruby transition-all">
-                                Run Full Diagnostics
+                                {t('dashboard.run_diagnostics')}
                             </button>
                         </div>
                     </div>
@@ -131,6 +133,7 @@ function AdminStat({ icon: Icon, label, value, trend }) {
 }
 
 function VerificationCard({ hospital, index, onAction }) {
+    const { t } = useTranslation();
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -143,11 +146,11 @@ function VerificationCard({ hospital, index, onAction }) {
                     <Users className="w-6 h-6 text-foreground/30 group-hover:text-ruby" />
                 </div>
                 <div>
-                    <h3 className="font-bold text-lg">{hospital.hospitalName || 'New Hospital'}</h3>
+                    <h3 className="font-bold text-lg">{hospital.hospitalName || t('dashboard.new_hospital')}</h3>
                     <p className="text-xs text-foreground/40 flex items-center gap-2">
-                        License: <span className="text-ruby font-medium">{hospital.licenseNumber}</span>
+                        {t('dashboard.license')}: <span className="text-ruby font-medium">{hospital.licenseNumber}</span>
                         <span className="w-1 h-1 rounded-full bg-foreground/20" />
-                        Contact: {hospital.emergencyContactNumber}
+                        {t('dashboard.contact')}: {hospital.emergencyContactNumber}
                     </p>
                 </div>
             </div>
@@ -156,7 +159,7 @@ function VerificationCard({ hospital, index, onAction }) {
                 <button
                     onClick={() => onAction(hospital.id, 'REJECTED')}
                     className="p-3 rounded-xl border border-ruby/20 text-ruby hover:bg-ruby hover:text-white transition-all"
-                    title="Reject"
+                    title={t('dashboard.reject_title')}
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -165,7 +168,7 @@ function VerificationCard({ hospital, index, onAction }) {
                     className="flex-1 md:flex-none px-8 py-3 bg-ruby text-white font-bold rounded-xl shadow-lg shadow-ruby/20 hover:bg-ruby-dark transition-all flex items-center gap-2"
                 >
                     <Check className="w-5 h-5" />
-                    Verify Facility
+                    {t('dashboard.verify_facility')}
                 </button>
             </div>
         </motion.div>

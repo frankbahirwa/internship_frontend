@@ -7,8 +7,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({ identifier: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -90,7 +93,7 @@ export default function LoginPage() {
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
+                        transition={{ duration: 0.4 }}
                     >
                         <div className="flex items-center gap-3 mb-12">
                             <div className="w-12 h-12 bg-ruby rounded-2xl flex items-center justify-center shadow-lg shadow-ruby/40">
@@ -100,20 +103,19 @@ export default function LoginPage() {
                         </div>
 
                         <h1 className="text-5xl lg:text-6xl font-black leading-[1.1] tracking-tighter mb-8">
-                            <span className="whitespace-nowrap">Experience <span className="text-ruby">Seamless</span></span> <br />
-                            Life Saving.
+                            <span className="whitespace-nowrap">{t('auth.experience')} <span className="text-ruby">{t('auth.seamless')}</span></span> <br />
+                            {t('auth.life_saving')}
                         </h1>
 
                         <p className="text-lg text-foreground/60 leading-relaxed mb-12 font-medium">
-                            Join the region's most efficient blood donation network.
-                            Connecting heroes with those in need instantly.
+                            {t('auth.join_network')}
                         </p>
 
                         {/* Feature Tags */}
                         <div className="grid grid-cols-2 gap-4">
                             {[
-                                { icon: Droplets, label: 'URGENT MATCH', color: 'ruby' },
-                                { icon: Lock, label: 'SAFE & SECURE', color: 'foreground' },
+                                { icon: Droplets, label: t('auth.urgent_match'), color: 'ruby' },
+                                { icon: Lock, label: t('auth.safe_secure'), color: 'foreground' },
                             ].map((tag, i) => (
                                 <motion.div
                                     key={i}
@@ -145,9 +147,12 @@ export default function LoginPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-[480px] relative z-10"
                 >
+                    <div className="absolute -top-12 right-0 md:-top-16">
+                        <LanguageSelector />
+                    </div>
                     <div className="mb-10">
-                        <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">Sign In</h2>
-                        <p className="text-foreground/40 text-xs font-bold tracking-[0.2em] uppercase">Welcome back to LifeLine</p>
+                        <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">{t('auth.sign_in')}</h2>
+                        <p className="text-foreground/40 text-xs font-bold tracking-[0.2em] uppercase">{t('auth.welcome_back')}</p>
                     </div>
 
                     {error && (
@@ -163,7 +168,7 @@ export default function LoginPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="space-y-3">
-                            <label className="text-sm font-bold text-foreground/60 ml-1">Email or Phone</label>
+                            <label className="text-sm font-bold text-foreground/60 ml-1">{t('auth.email_phone')}</label>
                             <div className="relative group/field">
                                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
                                 <input
@@ -179,7 +184,7 @@ export default function LoginPage() {
 
                         <div className="space-y-3">
                             <div className="flex justify-between items-center ml-1">
-                                <label className="text-sm font-bold text-foreground/60">Password</label>
+                                <label className="text-sm font-bold text-foreground/60">{t('auth.password')}</label>
                             </div>
                             <div className="relative group/field">
                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/20 group-focus-within/field:text-ruby transition-all" />
@@ -194,7 +199,7 @@ export default function LoginPage() {
                             </div>
                             <div className="flex justify-end pr-1">
                                 <Link href="/forgot-password" size="sm" className="text-xs text-ruby font-bold hover:underline">
-                                    Forgot your password?
+                                    {t('auth.forgot_password')}
                                 </Link>
                             </div>
                         </div>
@@ -205,7 +210,7 @@ export default function LoginPage() {
                                 id="remember"
                                 className="w-5 h-5 rounded-lg border-foreground/10 text-ruby focus:ring-ruby/20 transition-all cursor-pointer accent-ruby"
                             />
-                            <label htmlFor="remember" className="text-sm font-bold text-foreground/60 cursor-pointer">Remember me</label>
+                            <label htmlFor="remember" className="text-sm font-bold text-foreground/60 cursor-pointer">{t('auth.remember_me')}</label>
                         </div>
 
                         <div className="pt-2">
@@ -218,7 +223,7 @@ export default function LoginPage() {
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                 ) : (
                                     <>
-                                        Sign In
+                                        {t('auth.sign_in')}
                                         <ArrowRight className="w-3.5 h-3.5" />
                                     </>
                                 )}
@@ -229,14 +234,14 @@ export default function LoginPage() {
                     <div className="mt-12 flex flex-col items-center gap-8">
 
                         <p className="text-foreground/40 text-xs font-bold uppercase tracking-widest">
-                            New to lifeline?{' '}
+                            {t('auth.new_to_lifeline')}{' '}
                             <Link href="/register" className="text-ruby hover:underline">
-                                Create an account
+                                {t('auth.create_account')}
                             </Link>
                         </p>
 
                         <Link href="/" className="flex items-center gap-2 text-[10px] text-foreground/20 hover:text-foreground/40 transition-colors uppercase font-black tracking-[0.2em]">
-                            <ArrowLeft className="w-3 h-3" /> Back to home
+                            <ArrowLeft className="w-3 h-3" /> {t('auth.back_to_home')}
                         </Link>
                     </div>
                 </motion.div>

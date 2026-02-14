@@ -5,11 +5,10 @@ import { motion } from 'framer-motion';
 import { Activity, BarChart3, TrendingUp, Users, Heart, Loader2, Clock, CheckCircle } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function HospitalReportsPage() {
-    const { user } = useAuthStore();
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -39,10 +38,10 @@ export default function HospitalReportsPage() {
             <div className="flex items-end justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-foreground">
-                        Performance <span className="text-ruby">Reports</span>
+                        {t('dashboard.performance_reports').split(' ')[0]} <span className="text-ruby">{t('dashboard.reports')}</span>
                     </h1>
                     <p className="text-foreground/50 font-medium mt-1">
-                        Analyze your request fulfillment and donor engagement.
+                        {t('dashboard.performance_reports_desc')}
                     </p>
                 </div>
             </div>
@@ -51,25 +50,25 @@ export default function HospitalReportsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ReportCard
                     icon={Activity}
-                    label="Total Requests"
+                    label={t('dashboard.total_requests_stat')}
                     value={stats?.requestStats?.totalRequests || 0}
                     color="blue"
                 />
                 <ReportCard
                     icon={CheckCircle}
-                    label="Fulfilled"
+                    label={t('dashboard.fulfilled_stat')}
                     value={stats?.requestStats?.fulfilledRequests || 0}
                     color="emerald"
                 />
                 <ReportCard
                     icon={Clock}
-                    label="Avg Fulfillment Time"
+                    label={t('dashboard.avg_fulfillment_time')}
                     value={`${stats?.performance?.avgFulfillmentTimeHours || 0}h`}
                     color="amber"
                 />
                 <ReportCard
                     icon={Users}
-                    label="Donors Engaged"
+                    label={t('dashboard.donors_engaged')}
                     value={stats?.performance?.totalDonorsEngaged || 0}
                     color="ruby"
                 />
@@ -82,7 +81,7 @@ export default function HospitalReportsPage() {
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-xl font-bold flex items-center gap-2">
                             <TrendingUp className="w-5 h-5 text-emerald-500" />
-                            Efficiency Trends
+                            {t('dashboard.efficiency_trends')}
                         </h3>
                     </div>
                     <div className="h-64 flex items-end justify-between gap-4 px-2 border-b border-foreground/5 pb-4">
@@ -92,7 +91,7 @@ export default function HospitalReportsPage() {
                                 <div className="w-full bg-emerald-500/10 rounded-t-lg relative transition-all group-hover:bg-emerald-500/20" style={{ height: `${h}%` }}>
                                     <div className="absolute top-0 inset-x-0 h-1 bg-emerald-500/50" />
                                 </div>
-                                <span className="text-[10px] uppercase font-bold text-foreground/30">Day {i + 1}</span>
+                                <span className="text-[10px] uppercase font-bold text-foreground/30">{t('dashboard.day')} {i + 1}</span>
                             </div>
                         ))}
                     </div>
@@ -103,7 +102,7 @@ export default function HospitalReportsPage() {
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-xl font-bold flex items-center gap-2">
                             <Activity className="w-5 h-5 text-ruby" />
-                            Blood Type Demand
+                            {t('dashboard.blood_type_demand')}
                         </h3>
                     </div>
 

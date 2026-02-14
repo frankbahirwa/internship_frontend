@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, AlertCircle, CheckCircle, Clock, User, Download } from 'lucide-react';
 import api from '@/lib/api';
+import { useTranslation } from 'react-i18next';
 
 export default function AuditLogsPage() {
+    const { t } = useTranslation();
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('ALL');
@@ -40,13 +42,13 @@ export default function AuditLogsPage() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold bg-linear-to-r from-white to-white/60 bg-clip-text text-transparent">Audit Logs</h1>
-                    <p className="text-foreground/40 text-sm">Monitor system activity and security events.</p>
+                    <h1 className="text-2xl font-bold bg-linear-to-r from-white to-white/60 bg-clip-text text-transparent">{t('dashboard.audit_logs')}</h1>
+                    <p className="text-foreground/40 text-sm">{t('dashboard.audit_logs_desc')}</p>
                 </div>
                 <div className="flex gap-2">
                     <button className="flex items-center gap-2 px-4 py-2 bg-foreground/5 hover:bg-foreground/10 rounded-xl transition-colors text-sm font-medium">
                         <Download className="w-4 h-4" />
-                        Export CSV
+                        {t('dashboard.export_csv')}
                     </button>
                 </div>
             </div>
@@ -57,7 +59,7 @@ export default function AuditLogsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20" />
                     <input
                         type="text"
-                        placeholder="Search by action, user, or details..."
+                        placeholder={t('dashboard.search_logs_desc')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-obsidian border border-foreground/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-ruby/50 transition-colors"
@@ -73,7 +75,7 @@ export default function AuditLogsPage() {
                                 : 'bg-foreground/5 text-foreground/60 hover:bg-foreground/10'
                                 }`}
                         >
-                            {f.replace('_', ' ')}
+                            {t(`dashboard.${f.toLowerCase()}`)}
                         </button>
                     ))}
                 </div>
@@ -85,24 +87,24 @@ export default function AuditLogsPage() {
                     <table className="w-full text-left text-sm">
                         <thead className="bg-foreground/5 text-foreground/40 font-medium uppercase text-xs">
                             <tr>
-                                <th className="px-6 py-4">Timestamp</th>
-                                <th className="px-6 py-4">User</th>
-                                <th className="px-6 py-4">Action</th>
-                                <th className="px-6 py-4">Details</th>
-                                <th className="px-6 py-4">IP Address</th>
+                                <th className="px-6 py-4">{t('dashboard.timestamp')}</th>
+                                <th className="px-6 py-4">{t('dashboard.user')}</th>
+                                <th className="px-6 py-4">{t('dashboard.action')}</th>
+                                <th className="px-6 py-4">{t('dashboard.details')}</th>
+                                <th className="px-6 py-4">{t('dashboard.ip_address')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-foreground/5">
                             {loading ? (
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center text-foreground/40">
-                                        Loading audit logs...
+                                        {t('dashboard.loading_logs')}
                                     </td>
                                 </tr>
                             ) : filteredLogs.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center text-foreground/40">
-                                        No audit logs found matching your criteria.
+                                        {t('dashboard.no_logs_found')}
                                     </td>
                                 </tr>
                             ) : (
@@ -122,8 +124,8 @@ export default function AuditLogsPage() {
                                                     {log.user?.username?.[0] || <User className="w-4 h-4" />}
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-foreground">{log.user?.username || 'Unknown'}</div>
-                                                    <div className="text-xs text-foreground/40">{log.user?.role || 'System'}</div>
+                                                    <div className="font-medium text-foreground">{log.user?.username || t('dashboard.unknown')}</div>
+                                                    <div className="text-xs text-foreground/40">{log.user?.role || t('dashboard.system')}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -132,7 +134,7 @@ export default function AuditLogsPage() {
                                                 log.action.includes('create') || log.action.includes('VERIFY') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
                                                     'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                                 }`}>
-                                                {log.action}
+                                                {t(`dashboard.${log.action.toLowerCase()}`)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-foreground/60 max-w-xs truncate" title={log.details}>

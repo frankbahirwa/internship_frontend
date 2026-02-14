@@ -5,11 +5,14 @@ import { motion } from 'framer-motion';
 import { Activity, Calendar, MapPin, CheckCircle2, XCircle, Clock, FileText, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function DonorResponsesPage() {
     const { user } = useAuthStore();
     const [responses, setResponses] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchResponses = async () => {
@@ -38,26 +41,26 @@ export default function DonorResponsesPage() {
         <div className="space-y-8 pb-12">
             <div>
                 <h1 className="text-3xl font-black text-foreground">
-                    My <span className="text-ruby">Responses</span>
+                    {t('dashboard.my_responses').split(' ')[0]} <span className="text-ruby">{t('dashboard.responses')}</span>
                 </h1>
                 <p className="text-foreground/50 font-medium mt-1">
-                    Track the status of your donation commitments.
+                    {t('dashboard.responses_desc')}
                 </p>
             </div>
 
             <div className="grid gap-6">
                 {responses.length > 0 ? (
                     responses.map((response, idx) => (
-                        <ResponseCard key={response.id} response={response} index={idx} />
+                        <ResponseCard key={response.id} response={response} index={idx} t={t} />
                     ))
                 ) : (
                     <div className="py-20 text-center glass rounded-3xl border-dashed border-2 border-foreground/10">
                         <div className="w-20 h-20 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-6 text-foreground/20">
                             <Clock className="w-10 h-10" />
                         </div>
-                        <h3 className="text-xl font-bold text-foreground/40">No activity yet</h3>
+                        <h3 className="text-xl font-bold text-foreground/40">{t('dashboard.no_activity_yet')}</h3>
                         <p className="text-foreground/30 mt-2 max-w-md mx-auto">
-                            You haven't responded to any requests yet. Start your journey by browsing requests!
+                            {t('dashboard.no_activity_desc')}
                         </p>
                     </div>
                 )}
@@ -66,11 +69,11 @@ export default function DonorResponsesPage() {
     );
 }
 
-function ResponseCard({ response, index }) {
+function ResponseCard({ response, index, t }) {
     const statusConfig = {
-        ACCEPTED: { color: 'text-blue-500 bg-blue-500/10 border-blue-500/20', icon: Clock, label: 'Pledged' },
-        CONFIRMED: { color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20', icon: CheckCircle2, label: 'Completed' },
-        DECLINED: { color: 'text-foreground/40 bg-foreground/5 border-foreground/10', icon: XCircle, label: 'Declined' },
+        ACCEPTED: { color: 'text-blue-500 bg-blue-500/10 border-blue-500/20', icon: Clock, label: t('dashboard.pledged') },
+        CONFIRMED: { color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20', icon: CheckCircle2, label: t('dashboard.completed') },
+        DECLINED: { color: 'text-foreground/40 bg-foreground/5 border-foreground/10', icon: XCircle, label: t('dashboard.declined') },
     };
 
     const config = statusConfig[response.status] || statusConfig.ACCEPTED;
@@ -88,7 +91,7 @@ function ResponseCard({ response, index }) {
                     <StatusIcon className="w-6 h-6" />
                 </div>
                 <div>
-                    <h3 className="font-bold text-lg">{response.request?.hospital?.username || 'Hospital Request'}</h3>
+                    <h3 className="font-bold text-lg">{response.request?.hospital?.username || t('dashboard.hospital_request')}</h3>
                     <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/50 mt-1">
                         <span className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
@@ -105,8 +108,8 @@ function ResponseCard({ response, index }) {
             <div className="flex items-center gap-6">
                 {/* Units */}
                 <div className="hidden md:block text-right">
-                    <span className="block text-xs font-bold text-foreground/40 uppercase tracking-wider">Amount</span>
-                    <span className="font-mono font-bold">{response.request?.unitsNeeded} Units</span>
+                    <span className="block text-xs font-bold text-foreground/40 uppercase tracking-wider">{t('dashboard.amount')}</span>
+                    <span className="font-mono font-bold">{response.request?.unitsNeeded} {t('dashboard.units')}</span>
                 </div>
 
                 <div className={`px-4 py-2 rounded-xl font-bold text-sm border flex items-center gap-2 ${config.color}`}>
@@ -114,6 +117,7 @@ function ResponseCard({ response, index }) {
                     {config.label}
                 </div>
             </div>
+
         </motion.div>
     );
 }

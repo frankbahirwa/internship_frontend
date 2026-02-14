@@ -5,12 +5,15 @@ import { motion } from 'framer-motion';
 import { User, Mail, Phone, MapPin, Activity, ShieldCheck, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function DonorProfilePage() {
     const { user } = useAuthStore();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -35,7 +38,7 @@ export default function DonorProfilePage() {
             // Could add toast here
         } catch (err) {
             console.error('Error updating eligibility:', err);
-            alert('Failed to update eligibility status.');
+            alert(t('dashboard.cancel_failed')); // Reusing a general failure message or adding one if needed
         } finally {
             setUpdating(false);
         }
@@ -53,10 +56,10 @@ export default function DonorProfilePage() {
         <div className="space-y-8 w-full pb-12">
             <div>
                 <h1 className="text-3xl font-black text-foreground">
-                    My <span className="text-ruby">Profile</span>
+                    {t('dashboard.my_profile').split(' ')[0]} <span className="text-ruby">{t('dashboard.profile')}</span>
                 </h1>
                 <p className="text-foreground/50 font-medium mt-1">
-                    Manage your personal information and health status.
+                    {t('dashboard.profile_desc')}
                 </p>
             </div>
 
@@ -73,12 +76,12 @@ export default function DonorProfilePage() {
                         <h2 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-white/60">
                             {user?.username}
                         </h2>
-                        <p className="text-sm text-foreground/40 font-medium mb-6">Blood Donor</p>
+                        <p className="text-sm text-foreground/40 font-medium mb-6">{t('dashboard.blood_donor')}</p>
 
                         <div className="w-full space-y-4">
                             <InfoItem icon={Mail} text={user?.email} />
-                            <InfoItem icon={Phone} text={user?.phone || 'No phone'} />
-                            <InfoItem icon={MapPin} text={profile?.city || 'Location not set'} />
+                            <InfoItem icon={Phone} text={user?.phone || t('dashboard.no_phone')} />
+                            <InfoItem icon={MapPin} text={profile?.city || t('dashboard.location_not_set')} />
                         </div>
                     </div>
                 </div>
@@ -89,29 +92,29 @@ export default function DonorProfilePage() {
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
                                 <Activity className="w-5 h-5 text-emerald-500" />
-                                Medical Eligibility
+                                {t('dashboard.medical_eligibility')}
                             </h3>
                             {profile?.isMedicallyEligible ? (
                                 <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold border border-emerald-500/20 flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3" /> Certified
+                                    <CheckCircle2 className="w-3 h-3" /> {t('dashboard.certified')}
                                 </span>
                             ) : (
                                 <span className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-xs font-bold border border-orange-500/20 flex items-center gap-1">
-                                    <AlertCircle className="w-3 h-3" /> Not Certified
+                                    <AlertCircle className="w-3 h-3" /> {t('dashboard.not_certified')}
                                 </span>
                             )}
                         </div>
 
                         <p className="text-foreground/60 leading-relaxed mb-6">
-                            To ensure the safety of blood recipients, donors must self-certify their medical eligibility every 7 days. By certifying, you confirm you have no active infections, recent surgeries, or disqualifying conditions.
+                            {t('dashboard.eligibility_explanation')}
                         </p>
 
                         <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-6">
-                            <h4 className="font-bold text-sm mb-2 text-foreground/80">Self-Check Questions:</h4>
+                            <h4 className="font-bold text-sm mb-2 text-foreground/80">{t('dashboard.self_check_questions')}</h4>
                             <ul className="text-xs text-foreground/50 space-y-2 list-disc pl-4">
-                                <li>Are you feeling well and healthy today?</li>
-                                <li>Have you taken any antibiotics in the last 7 days?</li>
-                                <li>Have you had a tattoo or piercing in the last 6 months?</li>
+                                <li>{t('dashboard.q1')}</li>
+                                <li>{t('dashboard.q2')}</li>
+                                <li>{t('dashboard.q3')}</li>
                             </ul>
                         </div>
 
@@ -125,21 +128,22 @@ export default function DonorProfilePage() {
                                         : 'bg-emerald-500 text-obsidian hover:bg-emerald-400 shadow-emerald-500/20'}`}
                             >
                                 {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                                {profile?.isMedicallyEligible ? 'Certified' : 'I Am Eligible'}
+                                {profile?.isMedicallyEligible ? t('dashboard.certified') : t('dashboard.i_am_eligible')}
                             </button>
 
                             {!profile?.isMedicallyEligible && (
                                 <button className="px-6 py-3 rounded-xl border border-foreground/10 hover:bg-foreground/5 transition-colors text-foreground/40 hover:text-foreground">
-                                    Learn More
+                                    {t('dashboard.learn_more')}
                                 </button>
                             )}
                         </div>
 
                         {profile?.lastEligibilityCheck && (
                             <p className="text-xs text-foreground/30 mt-4 text-center">
-                                Last checked: {new Date(profile.lastEligibilityCheck).toLocaleDateString()}
+                                {t('dashboard.last_checked')}: {new Date(profile.lastEligibilityCheck).toLocaleDateString()}
                             </p>
                         )}
+
                     </div>
 
 

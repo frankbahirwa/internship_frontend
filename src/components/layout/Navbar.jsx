@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function Navbar() {
+    const { t } = useTranslation();
     const { user, logout, isAuthenticated } = useAuthStore();
     const pathname = usePathname();
     const router = useRouter();
@@ -43,7 +45,7 @@ export default function Navbar() {
                     {isAuthenticated ? (
                         <>
                             <Link href={`/dashboard/${user?.role?.toLowerCase()}`} className={`text-sm font-medium transition-colors hover:text-ruby ${pathname.includes('/dashboard') ? 'text-ruby' : 'text-foreground/60'}`}>
-                                Dashboard
+                                {t('common.dashboard')}
                             </Link>
                             <div className="flex items-center gap-4 pl-4 border-l border-foreground/10">
                                 <button className="relative p-2 text-foreground/60 hover:text-ruby transition-colors">
@@ -61,7 +63,7 @@ export default function Navbar() {
                                     <button
                                         onClick={handleLogout}
                                         className="ml-2 p-1.5 hover:bg-ruby/10 hover:text-ruby rounded-lg transition-colors group"
-                                        title="Logout"
+                                        title={t('common.logout')}
                                     >
                                         <LogOut className="w-4 h-4" />
                                     </button>
@@ -71,10 +73,10 @@ export default function Navbar() {
                     ) : (
                         <>
                             <Link href="/login" className="text-sm font-medium text-foreground/60 hover:text-ruby transition-colors">
-                                Log In
+                                {t('common.login')}
                             </Link>
                             <Link href="/register" className="btn-primary text-sm py-2 px-6">
-                                Become a Hero
+                                {t('common.become_hero')}
                             </Link>
                         </>
                     )}
@@ -98,18 +100,18 @@ export default function Navbar() {
                 >
                     {isAuthenticated ? (
                         <>
-                            <Link href={`/dashboard/${user?.role?.toLowerCase()}`} className="text-lg font-medium">Dashboard</Link>
+                            <Link href={`/dashboard/${user?.role?.toLowerCase()}`} className="text-lg font-medium">{t('common.dashboard')}</Link>
                             <button
                                 onClick={handleLogout}
                                 className="flex items-center gap-2 text-ruby font-medium pt-4 border-t border-foreground/10"
                             >
-                                <LogOut className="w-5 h-5" /> Log Out
+                                <LogOut className="w-5 h-5" /> {t('common.logout')}
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link href="/login" className="text-lg font-medium">Log In</Link>
-                            <Link href="/register" className="btn-primary text-center">Become a Hero</Link>
+                            <Link href="/login" className="text-lg font-medium">{t('common.login')}</Link>
+                            <Link href="/register" className="btn-primary text-center">{t('common.become_hero')}</Link>
                         </>
                     )}
                 </motion.div>

@@ -4,8 +4,11 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { X, Globe, User, Shield, LogOut, ChevronRight, CheckCircle2 } from 'lucide-react';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 export default function ProfileSidebar({ isOpen, onClose }) {
+    const { t } = useTranslation();
     const { user, logout } = useAuthStore();
     const router = useRouter();
 
@@ -66,12 +69,16 @@ export default function ProfileSidebar({ isOpen, onClose }) {
 
                     {/* Quick Settings */}
                     <div className="space-y-4">
-                        <div className="bg-obsidian-light/50 rounded-2xl p-2 border border-foreground/5">
-                            <MenuItem icon={Globe} title="Language" subtitle="Select Preference" value="EN" />
+                        <div className="bg-obsidian-light/50 rounded-2xl p-4 border border-foreground/5 space-y-4">
+                            <div className="flex items-center gap-3 mb-2 px-1">
+                                <Globe className="w-4 h-4 text-ruby" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">{t('common.language')}</span>
+                            </div>
+                            <LanguageSelector variant="list" />
                             <div className="h-px bg-foreground/5 mx-2" />
-                            <MenuItem icon={User} title="Edit Profile" subtitle="Update Personal Details" hasArrow />
+                            <MenuItem icon={User} title={t('common.edit_profile')} subtitle={t('common.update_details')} hasArrow />
                             <div className="h-px bg-foreground/5 mx-2" />
-                            <MenuItem icon={Shield} title="Security" subtitle="Change Password & 2FA" hasArrow />
+                            <MenuItem icon={Shield} title={t('common.security')} subtitle={t('common.security_desc')} hasArrow />
                         </div>
                     </div>
 

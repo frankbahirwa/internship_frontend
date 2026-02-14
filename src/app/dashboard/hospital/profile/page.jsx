@@ -5,11 +5,14 @@ import { motion } from 'framer-motion';
 import { Building2, MapPin, Phone, Mail, ShieldCheck, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 import useAuthStore from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function HospitalProfilePage() {
     const { user } = useAuthStore();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -38,10 +41,10 @@ export default function HospitalProfilePage() {
         <div className="space-y-8 w-full pb-12">
             <div>
                 <h1 className="text-3xl font-black text-foreground">
-                    Hospital <span className="text-ruby">Profile</span>
+                    {t('dashboard.hospital').split(' ')[0]} <span className="text-ruby">{t('dashboard.profile')}</span>
                 </h1>
                 <p className="text-foreground/50 font-medium mt-1">
-                    Manage your institution's details and verification status.
+                    {t('dashboard.hospital_profile_desc')}
                 </p>
             </div>
 
@@ -58,12 +61,12 @@ export default function HospitalProfilePage() {
                         <h2 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-white/60">
                             {profile?.hospitalName || user?.username}
                         </h2>
-                        <p className="text-sm text-foreground/40 font-medium mb-6">Medical Institution</p>
+                        <p className="text-sm text-foreground/40 font-medium mb-6">{t('dashboard.medical_institution')}</p>
 
                         <div className="w-full space-y-4">
                             <InfoItem icon={Mail} text={user?.email} />
-                            <InfoItem icon={Phone} text={user?.phone || 'No phone'} />
-                            <InfoItem icon={MapPin} text={profile?.city || 'Location not set'} />
+                            <InfoItem icon={Phone} text={user?.phone || t('dashboard.no_phone')} />
+                            <InfoItem icon={MapPin} text={profile?.city || t('dashboard.location_not_set')} />
                         </div>
                     </div>
                 </div>
@@ -74,45 +77,45 @@ export default function HospitalProfilePage() {
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
                                 <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                                Account Status
+                                {t('dashboard.account_status')}
                             </h3>
                             <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold border border-emerald-500/20 flex items-center gap-1">
-                                Verified Partner
+                                {t('dashboard.verified_partner')}
                             </span>
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center p-4 rounded-xl bg-white/5 border border-white/5">
                                 <div>
-                                    <p className="text-sm font-bold opacity-80">License ID</p>
-                                    <p className="text-xs opacity-40">Official Ministry of Health Registration</p>
+                                    <p className="text-sm font-bold opacity-80">{t('dashboard.license_id')}</p>
+                                    <p className="text-xs opacity-40">{t('dashboard.moh_registration')}</p>
                                 </div>
                                 <span className="font-mono text-sm bg-black/20 px-3 py-1 rounded">
-                                    {profile?.licenseNumber || 'Not provided'}
+                                    {profile?.licenseNumber || t('dashboard.not_provided')}
                                 </span>
                             </div>
 
                             <div className="flex justify-between items-center p-4 rounded-xl bg-white/5 border border-white/5">
                                 <div>
-                                    <p className="text-sm font-bold opacity-80">Director Name</p>
-                                    <p className="text-xs opacity-40">Responsible Party</p>
+                                    <p className="text-sm font-bold opacity-80">{t('dashboard.director_name')}</p>
+                                    <p className="text-xs opacity-40">{t('dashboard.responsible_party')}</p>
                                 </div>
                                 <span className="font-medium text-sm">
-                                    {profile?.directorName || 'Not provided'}
+                                    {profile?.directorName || t('dashboard.not_provided')}
                                 </span>
                             </div>
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-white/5">
-                            <h4 className="font-bold mb-4">Verification Documents</h4>
+                            <h4 className="font-bold mb-4">{t('dashboard.verification_documents')}</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors cursor-pointer">
                                     <Building2 className="w-8 h-8 opacity-20" />
-                                    <span className="text-xs opacity-40">Operating License</span>
+                                    <span className="text-xs opacity-40">{t('dashboard.operating_license')}</span>
                                 </div>
                                 <div className="p-4 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/5 transition-colors cursor-pointer">
                                     <ShieldCheck className="w-8 h-8 opacity-20" />
-                                    <span className="text-xs opacity-40">MoH Certificate</span>
+                                    <span className="text-xs opacity-40">{t('dashboard.moh_certificate')}</span>
                                 </div>
                             </div>
                         </div>
